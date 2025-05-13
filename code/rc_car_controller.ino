@@ -1,170 +1,133 @@
-//By Coding Moves //
-// WiFi control Car using NodeMCU //
+// By Coding Moves
+// WiFi Controlled Car using NodeMCU (ESP8266)
+// Project: Coding Moves RC+
 
-\#define ENA   14          // Enable/speed motors Right        GPIO14(D5)
-\#define ENB   12          // Enable/speed motors Left         GPIO12(D6)
-\#define IN\_1  15          // L298N in1 motors Right           GPIO15(D8)
-\#define IN\_2  13          // L298N in2 motors Right           GPIO13(D7)
-\#define IN\_3  2           // L298N in3 motors Left            GPIO2(D4)
-\#define IN\_4  0           // L298N in4 motors Left            GPIO0(D3)
+#include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <ESP8266WebServer.h>
 
-\#include \<ESP8266WiFi.h>
-\#include \<WiFiClient.h>
-\#include \<ESP8266WebServer.h>
+// Motor driver pin definitions
+#define ENA   14  // Enable/speed motors Right  (D5)
+#define ENB   12  // Enable/speed motors Left   (D6)
+#define IN_1  15  // Motor IN1 (Right)          (D8)
+#define IN_2  13  // Motor IN2 (Right)          (D7)
+#define IN_3  2   // Motor IN3 (Left)           (D4)
+#define IN_4  0   // Motor IN4 (Left)           (D3)
 
-String command;             // String to store app command state.
-int speedCar = 800;         // Speed value (range 400 - 1023).
-int speed\_Coeff = 3;
-
-const char\* ssid = "NodeMCU Car";
+// WiFi settings
+const char* ssid = "Coding Moves RC+";
+const char* password = "codingmoves123";
 
 ESP8266WebServer server(80);
 
+String command;              // Command received from mobile app
+int speedCar = 800;          // Default speed
+int speed_Coeff = 3;         // Coefficient for turning curves
+
 void setup() {
-pinMode(ENA, OUTPUT);
-pinMode(ENB, OUTPUT);
-pinMode(IN\_1, OUTPUT);
-pinMode(IN\_2, OUTPUT);
-pinMode(IN\_3, OUTPUT);
-pinMode(IN\_4, OUTPUT);
+  // Motor pin setup
+  pinMode(ENA, OUTPUT);
+  pinMode(ENB, OUTPUT);
+  pinMode(IN_1, OUTPUT);
+  pinMode(IN_2, OUTPUT);
+  pinMode(IN_3, OUTPUT);
+  pinMode(IN_4, OUTPUT);
 
-Serial.begin(115200);
+  Serial.begin(115200);
 
-// Start Wi-Fi Access Point
-WiFi.mode(WIFI\_AP);
-WiFi.softAP(ssid);
+  // Start WiFi access point
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid, password);
 
-IPAddress myIP = WiFi.softAPIP();
-Serial.print("AP IP address: ");
-Serial.println(myIP);
+  IPAddress myIP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(myIP);
 
-// Start web server
-server.on("/", HTTP\_handleRoot);
-server.onNotFound(HTTP\_handleRoot);
-server.begin();
+  // Route handling
+  server.on("/", HTTP_handleRoot);
+  server.onNotFound(HTTP_handleRoot);
+  server.begin();
 }
 
-// Direction Control Functions
+// Movement functions
 void goAhead() {
-digitalWrite(IN\_1, LOW);
-digitalWrite(IN\_2, HIGH);
-analogWrite(ENA, speedCar);
-
-digitalWrite(IN\_3, LOW);
-digitalWrite(IN\_4, HIGH);
-analogWrite(ENB, speedCar);
+  digitalWrite(IN_1, LOW);  digitalWrite(IN_2, HIGH); analogWrite(ENA, speedCar);
+  digitalWrite(IN_3, LOW);  digitalWrite(IN_4, HIGH); analogWrite(ENB, speedCar);
 }
 
 void goBack() {
-digitalWrite(IN\_1, HIGH);
-digitalWrite(IN\_2, LOW);
-analogWrite(ENA, speedCar);
-
-digitalWrite(IN\_3, HIGH);
-digitalWrite(IN\_4, LOW);
-analogWrite(ENB, speedCar);
+  digitalWrite(IN_1, HIGH); digitalWrite(IN_2, LOW);  analogWrite(ENA, speedCar);
+  digitalWrite(IN_3, HIGH); digitalWrite(IN_4, LOW);  analogWrite(ENB, speedCar);
 }
 
-// ✅ Swapped Left and Right logic
 void goRight() {
-digitalWrite(IN\_1, LOW);
-digitalWrite(IN\_2, HIGH);
-analogWrite(ENA, speedCar);
-
-digitalWrite(IN\_3, HIGH);
-digitalWrite(IN\_4, LOW);
-analogWrite(ENB, speedCar);
+  digitalWrite(IN_1, LOW);  digitalWrite(IN_2, HIGH); analogWrite(ENA, speedCar);
+  digitalWrite(IN_3, HIGH); digitalWrite(IN_4, LOW);  analogWrite(ENB, speedCar);
 }
 
 void goLeft() {
-digitalWrite(IN\_1, HIGH);
-digitalWrite(IN\_2, LOW);
-analogWrite(ENA, speedCar);
-
-digitalWrite(IN\_3, LOW);
-digitalWrite(IN\_4, HIGH);
-analogWrite(ENB, speedCar);
+  digitalWrite(IN_1, HIGH); digitalWrite(IN_2, LOW);  analogWrite(ENA, speedCar);
+  digitalWrite(IN_3, LOW);  digitalWrite(IN_4, HIGH); analogWrite(ENB, speedCar);
 }
 
 void goAheadRight() {
-digitalWrite(IN\_1, LOW);
-digitalWrite(IN\_2, HIGH);
-analogWrite(ENA, speedCar / speed\_Coeff);
-
-digitalWrite(IN\_3, LOW);
-digitalWrite(IN\_4, HIGH);
-analogWrite(ENB, speedCar);
+  digitalWrite(IN_1, LOW);  digitalWrite(IN_2, HIGH); analogWrite(ENA, speedCar / speed_Coeff);
+  digitalWrite(IN_3, LOW);  digitalWrite(IN_4, HIGH); analogWrite(ENB, speedCar);
 }
 
 void goAheadLeft() {
-digitalWrite(IN\_1, LOW);
-digitalWrite(IN\_2, HIGH);
-analogWrite(ENA, speedCar);
-
-digitalWrite(IN\_3, LOW);
-digitalWrite(IN\_4, HIGH);
-analogWrite(ENB, speedCar / speed\_Coeff);
+  digitalWrite(IN_1, LOW);  digitalWrite(IN_2, HIGH); analogWrite(ENA, speedCar);
+  digitalWrite(IN_3, LOW);  digitalWrite(IN_4, HIGH); analogWrite(ENB, speedCar / speed_Coeff);
 }
 
 void goBackRight() {
-digitalWrite(IN\_1, HIGH);
-digitalWrite(IN\_2, LOW);
-analogWrite(ENA, speedCar / speed\_Coeff);
-
-digitalWrite(IN\_3, HIGH);
-digitalWrite(IN\_4, LOW);
-analogWrite(ENB, speedCar);
+  digitalWrite(IN_1, HIGH); digitalWrite(IN_2, LOW);  analogWrite(ENA, speedCar / speed_Coeff);
+  digitalWrite(IN_3, HIGH); digitalWrite(IN_4, LOW);  analogWrite(ENB, speedCar);
 }
 
 void goBackLeft() {
-digitalWrite(IN\_1, HIGH);
-digitalWrite(IN\_2, LOW);
-analogWrite(ENA, speedCar);
-
-digitalWrite(IN\_3, HIGH);
-digitalWrite(IN\_4, LOW);
-analogWrite(ENB, speedCar / speed\_Coeff);
+  digitalWrite(IN_1, HIGH); digitalWrite(IN_2, LOW);  analogWrite(ENA, speedCar);
+  digitalWrite(IN_3, HIGH); digitalWrite(IN_4, LOW);  analogWrite(ENB, speedCar / speed_Coeff);
 }
 
 void stopRobot() {
-digitalWrite(IN\_1, LOW);
-digitalWrite(IN\_2, LOW);
-analogWrite(ENA, speedCar);
-
-digitalWrite(IN\_3, LOW);
-digitalWrite(IN\_4, LOW);
-analogWrite(ENB, speedCar);
+  digitalWrite(IN_1, LOW);  digitalWrite(IN_2, LOW);  analogWrite(ENA, 0);
+  digitalWrite(IN_3, LOW);  digitalWrite(IN_4, LOW);  analogWrite(ENB, 0);
 }
 
+// Handle incoming commands
 void loop() {
-server.handleClient();
-command = server.arg("State");
+  server.handleClient();
+  command = server.arg("State");
 
-if (command == "F") goAhead();
-else if (command == "B") goBack();
-else if (command == "L") goLeft();
-else if (command == "R") goRight();
-else if (command == "I") goAheadRight();
-else if (command == "G") goAheadLeft();
-else if (command == "J") goBackRight();
-else if (command == "H") goBackLeft();
-else if (command == "0") speedCar = 400;
-else if (command == "1") speedCar = 470;
-else if (command == "2") speedCar = 540;
-else if (command == "3") speedCar = 610;
-else if (command == "4") speedCar = 680;
-else if (command == "5") speedCar = 750;
-else if (command == "6") speedCar = 820;
-else if (command == "7") speedCar = 890;
-else if (command == "8") speedCar = 960;
-else if (command == "9") speedCar = 1023;
-else if (command == "S") stopRobot();
+  if      (command == "F") goAhead();
+  else if (command == "B") goBack();
+  else if (command == "L") goLeft();
+  else if (command == "R") goRight();
+  else if (command == "I") goAheadRight();
+  else if (command == "G") goAheadLeft();
+  else if (command == "J") goBackRight();
+  else if (command == "H") goBackLeft();
+  else if (command == "S") stopRobot();
+
+  // Speed levels 0–9
+  else if (command == "0") speedCar = 400;
+  else if (command == "1") speedCar = 470;
+  else if (command == "2") speedCar = 540;
+  else if (command == "3") speedCar = 610;
+  else if (command == "4") speedCar = 680;
+  else if (command == "5") speedCar = 750;
+  else if (command == "6") speedCar = 820;
+  else if (command == "7") speedCar = 890;
+  else if (command == "8") speedCar = 960;
+  else if (command == "9") speedCar = 1023;
 }
 
-void HTTP\_handleRoot(void) {
-if (server.hasArg("State")) {
-Serial.println(server.arg("State"));
-}
-server.send(200, "text/html", "");
-delay(1);
+// Web server route
+void HTTP_handleRoot() {
+  if (server.hasArg("State")) {
+    Serial.println(server.arg("State"));
+  }
+  server.send(200, "text/html", "");
+  delay(1);
 }
