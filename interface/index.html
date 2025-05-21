@@ -1,296 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WiFi RC Car</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #080808;
-            color: #eee;
-            font-family: 'Inter', sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center content horizontally */
-            justify-content: flex-start; /* Align items to the start of the container */
-            min-height: 100vh; /* Ensure full viewport height */
-        }
-        h1 {
-            color: #00f5d4;
-            margin-top: 30px;
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: 0.5rem;
-            text-shadow: 0 0 10px rgba(0, 245, 212, 0.8);
-        }
-        #status {
-            color: #ffcc00;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-        .controls {
-            display: flex;
-            flex-direction: column; /* Stack rows vertically */
-            align-items: center; /* Center rows horizontally */
-            margin-top: 20px;
-            width: 100%; /* Ensure controls take up full width */
-        }
-        .row {
-            display: flex;
-            justify-content: center; /* Center buttons horizontally */
-            width: 100%; /* Ensure each row takes up full width */
-            margin-bottom: 0; /* Remove default row margin-bottom */
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coding Moves RC+</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding-bottom: 60px;
+    }
 
-        .btn {
-            width: 100px; /* Adjusted button size */
-            height: 100px;
-            font-size: 1.5rem;
-            margin: 5px; /* Reduced margin */
-            border: none;
-            border-radius: 15px;
-            background-color: rgba(0, 245, 212, 0.1);
-            color: #00f5d4;
-            cursor: pointer;
-            box-shadow: 0 8px 15px rgba(0, 245, 212, 0.1);
-            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            border: 2px solid #00f5d4;
-        }
+    h1 {
+      color: #00ffcc;
+      margin-top: 20px;
+    }
 
-        .btn:hover {
-            background-color: rgba(0, 245, 212, 0.2);
-            transform: scale(1.05);
-            box-shadow: 0 12px 20px rgba(0, 245, 212, 0.15);
-        }
-        .btn:active {
-            background-color: rgba(0, 245, 212, 0.3);
-            transform: scale(0.95);
-            box-shadow: 0 4px 8px rgba(0, 245, 212, 0.1);
-        }
-        .btn-stop {
-            background-color: rgba(255, 70, 85, 0.1);
-            color: #ff4655;
-            border-color: #ff4655;
-        }
-        .btn-stop:hover {
-            background-color: rgba(255, 70, 85, 0.2);
-        }
-        .btn-stop:active {
-            background-color: rgba(255, 70, 85, 0.3);
-        }
-        .speed-btn {
-            background-color: rgba(0, 245, 212, 0.1);
-            color: #00f5d4;
-            border-color: #00f5d4;
-        }
-        .speed-btn:hover {
-            background-color: rgba(0, 245, 212, 0.2);
-        }
-        .speed-btn:active {
-            background-color: rgba(0, 245, 212, 0.3);
-        }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
 
-        #slider-container {
-            width: 80%;
-            margin: 20px auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
 
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 6px;
-            border-radius: 5px;
-            background: #1d1d1d;
-            outline: none;
-            -webkit-transition: .2s;
-            transition: opacity .2s;
-        }
+    .btn {
+      width: 80px;
+      height: 80px;
+      font-size: 24px;
+      border: solid 2px rgb(230, 13, 24);
+      border-radius: 15px;
+      background-color: #00ffcc;
+      color: black;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      touch-action: manipulation;
+    }
 
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #00f5d4;
-            cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
+    .btn:active {
+      background-color: #00b399;
+    }
 
-        input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #00f5d4;
-            cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            border: none;
-        }
+    footer {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 255, 204, 0.1);
+      border: 1px solid #00ffcc;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #00ffcc;
+      font-weight: bold;
+      user-select: none;
+    }
 
-        input[type="range"]:focus::-webkit-slider-thumb {
-            box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.3);
-        }
+    @media (max-width: 500px) {
+      .btn {
+        width: 60px;
+        height: 60px;
+        font-size: 20px;
+      }
 
-        input[type="range"]:focus::-moz-range-thumb {
-            box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.3);
-        }
-
-        #lock-button {
-            width: 150px;
-            height: 50px;
-            font-size: 1.2rem;
-            margin: 20px auto;
-            border: 2px solid #00f5d4;
-            border-radius: 10px;
-            background-color: rgba(0, 245, 212, 0.1);
-            color: #00f5d4;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        #lock-button:hover {
-            background-color: rgba(0, 245, 212, 0.2);
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        #lock-button.locked {
-            background-color: rgba(255, 70, 85, 0.8);
-            color: #eee;
-            border-color: #ff4655;
-        }
-        #lock-button.locked:hover {
-             background-color: rgba(255, 70, 85, 0.9);
-        }
-
-        @media (max-width: 768px) {
-            .btn {
-                width: 90px;
-                height: 90px;
-                font-size: 1.2rem;
-            }
-            h1{
-                font-size: 2rem;
-            }
-            #lock-button{
-                width: 90%;
-            }
-        }
-    </style>
+      footer {
+        font-size: 10px;
+        padding: 4px 8px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>ESP8266 WiFi Robot Car</h1>
-    <div id="status">Connecting...</div>
 
-    <div class="controls">
-        <div class="row">
-            <button class="btn btn-forward" onclick="sendCmd('F')">↑</button>
-        </div>
-        <div class="row">
-            <button class="btn btn-left" onclick="sendCmd('L')">←</button>
-            <button class="btn btn-stop" onclick="sendCmd('S')">⏹</button>
-            <button class="btn btn-right" onclick="sendCmd('R')">→</button>
-        </div>
-        <div class="row">
-            <button class="btn btn-back" onclick="sendCmd('B')">↓</button>
-        </div>
-        <div class="row">
-             <button class="btn" onclick="sendCmd('H')">Horn</button>
-        </div>
+  <h1>Coding Moves RC+</h1>
+
+  <div class="controls">
+    <div class="row">
+      <button class="btn" onmousedown="sendCmd('F')" onmouseup="sendCmd('S')" ontouchstart="sendCmd('F')" ontouchend="sendCmd('S')">↑</button>
     </div>
-
-    <div id="slider-container">
-        <label for="speed-slider" style="color:#00f5d4; font-size: 1.2rem; margin-bottom: 10px; display: block;">Speed Control</label>
-        <input type="range" id="speed-slider" min="0" max="255" value="127">
+    <div class="row">
+      <button class="btn" onmousedown="sendCmd('L')" onmouseup="sendCmd('S')" ontouchstart="sendCmd('L')" ontouchend="sendCmd('S')">←</button>
+      <button class="btn" onclick="sendCmd('S')">⏹</button>
+      <button class="btn" onmousedown="sendCmd('R')" onmouseup="sendCmd('S')" ontouchstart="sendCmd('R')" ontouchend="sendCmd('S')">→</button>
     </div>
+    <div class="row">
+      <button class="btn" onmousedown="sendCmd('B')" onmouseup="sendCmd('S')" ontouchstart="sendCmd('B')" ontouchend="sendCmd('S')">↓</button>
+    </div>
+    <div class="row">
+      <button class="btn" onmousedown="sendCmd('4')" onmouseup="sendCmd('S')" ontouchstart="sendCmd('4')" ontouchend="sendCmd('S')">⚡4</button>
+      <button class="btn" onmousedown="sendCmd('6')" onmouseup="sendCmd('S')" ontouchstart="sendCmd('6')" ontouchend="sendCmd('S')">⚡6</button>
+      <button class="btn" onmousedown="sendCmd('9')" onmouseup="sendCmd('S')" ontouchstart="sendCmd('9')" ontouchend="sendCmd('S')">⚡9</button>
+    </div>
+  </div>
 
-    <button id="lock-button" onclick="toggleLock()">Lock</button>
+  <footer>Presented by Coding Moves</footer>
 
-    <script>
-        const host = "192.168.4.1";
-        const port = 80;
-        const wsPath = "/ws";
-        let socket;
-        let isLocked = false;
-        const lockButton = document.getElementById('lock-button');
-        const speedSlider = document.getElementById('speed-slider');
+  <script>
+    const ip = "192.168.4.1"; 
 
+    function sendCmd(cmd) {
+      fetch(`http://${ip}/?State=${cmd}`)
+        .then(res => console.log(`Sent: ${cmd}`))
+        .catch(err => console.error('Error:', err));
+    }
+  </script>
 
-        function connect() {
-            socket = new WebSocket(\`ws://${host}:${port}${wsPath}\`);
-            socket.onopen = () => {
-                document.getElementById("status").textContent = "Connected!";
-            };
-            socket.onmessage = (event) => {
-                document.getElementById("status").textContent = "Received: " + event.data;
-                console.log("Received:", event.data);
-            };
-            socket.onclose = () => {
-                document.getElementById("status").textContent = "Disconnected!";
-            };
-            socket.onerror = (error) => {
-                document.getElementById("status").textContent = "Error: " + error;
-                console.error("WebSocket Error:", error);
-            };
-        }
-
-        function sendCmd(cmd) {
-            if (socket && socket.readyState === WebSocket.OPEN && !isLocked) {
-                socket.send(cmd);
-                console.log("Sent:", cmd);
-            } else if (isLocked) {
-                console.warn("Car is locked. Command not sent:", cmd);
-                document.getElementById("status").textContent = "Car Locked!";
-            }
-            else {
-                console.warn("Not connected to WebSocket.  Command not sent:", cmd);
-                document.getElementById("status").textContent = "Not Connected!";
-            }
-        }
-
-        function toggleLock() {
-            isLocked = !isLocked;
-            if (isLocked) {
-                lockButton.classList.add('locked');
-                lockButton.textContent = "Locked";
-            } else {
-                lockButton.classList.remove('locked');
-                lockButton.textContent = "Lock";
-            }
-        }
-
-        speedSlider.addEventListener('input', function() {
-            if (!isLocked){
-                const speed = this.value;
-                sendCmd('M' + speed); // Send speed command
-                console.log("Sent Speed:", speed);
-            }
-            else{
-                 console.warn("Car is locked. Speed not sent");
-                 document.getElementById("status").textContent = "Car Locked!";
-            }
-
-        });
-
-        window.onload = connect;
-    </script>
 </body>
 </html>
-
