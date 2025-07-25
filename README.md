@@ -15,7 +15,7 @@ A fun IoT project where you control an RC car over WiFi using your mobile phone.
 
 Below is the folder structure for the WiFi-Controlled RC Car project:
 
-```
+```markdown
 iot-rc-car-controller/
 │
 ├── code/
