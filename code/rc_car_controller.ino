@@ -16,7 +16,7 @@
 
 // WiFi settings
 const char* ssid = "Coding Moves RC+";
-const char* password = "codingmoves123";
+const char* password = "codingmoves_123";
 
 ESP8266WebServer server(80);
 
